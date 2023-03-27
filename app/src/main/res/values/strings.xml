@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ChatGPT Lite</string>
+    <string name="title_activity_conversations">Conversations</string>
 </resources>
