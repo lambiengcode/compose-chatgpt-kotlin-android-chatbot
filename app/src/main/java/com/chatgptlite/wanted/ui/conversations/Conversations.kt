@@ -2,6 +2,7 @@ package com.chatgptlite.wanted.ui.conversations
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -10,79 +11,65 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chatgptlite.wanted.data.fake.fakeMessages
 import com.chatgptlite.wanted.models.MessageModel
+import com.chatgptlite.wanted.ui.conversations.components.TextInput
 import com.chatgptlite.wanted.ui.conversations.ui.theme.ChatGPTLiteTheme
+import com.chatgptlite.wanted.ui.theme.*
 import java.util.*
 
 @Composable
 fun Conversations() {
-    val messagesData: List<MessageModel> = listOf(
-        MessageModel(
-            isMe = true,
-            message = "What's flutter",
-            createdAt = Date()
-        ),
-        MessageModel(
-            isMe = false,
-            message = "Flutter is...",
-            createdAt = Date()
-        ),
-        MessageModel(
-            isMe = true,
-            message = "Who is lambiengcode?",
-            createdAt = Date()
-        ),
-        MessageModel(
-            isMe = false,
-            message = "I'm Kai (lambiengcode), currently working as the Technical Leader at Askany and Waodate. Computador Also, I'm a freelancer. If you have a need for a mobile application or website, contact me by email: lambiengcode@gmail.com",
-            createdAt = Date()
-        ),
-    )
-
     ChatGPTLiteTheme(darkTheme = true) {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = BackGroundColor
         ) {
-            MessageList(messages = messagesData)
+            Column {
+                MessageList(messages = fakeMessages)
+                TextInput()
+            }
         }
     }
 }
 
 @Composable
-fun MessageList(messages: List<MessageModel>) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+fun ColumnScope.MessageList(messages: List<MessageModel>) {
+    LazyColumn(
+        Modifier.fillMaxWidth().weight(1f, false)
+            .padding(horizontal = 16.dp),
+        reverseLayout = true,
     ) {
-        messages.forEach { message ->
-            MessageCard(message = message)
+        items(messages.size) { index ->
+            MessageCard(message = messages[index], isLast = index == messages.size - 1)
         }
     }
 }
 
 @Composable
-fun MessageCard(message: MessageModel) {
+fun MessageCard(message: MessageModel, isLast: Boolean = false) {
     Column(
         horizontalAlignment = if (message.isMe) Alignment.End else Alignment.Start,
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp).padding(top = if (isLast) 80.dp else 0.dp)
     ) {
         Box(
             modifier = Modifier
-                .heightIn(0.dp, 232.dp) //mention max height here
                 .widthIn(0.dp, 260.dp) //mention max width here
                 .background(
-                    Color(0xFFE2F0E9),
-                    shape = RoundedCornerShape(8.dp)
+                    if (message.isMe) BackGroundMessageHuman else BackGroundMessageGPT,
+                    shape = RoundedCornerShape(12.dp)
                 ),
         ) {
             Text(
-                text = message.message, fontSize = 13.sp, color = Color.Black,
-                modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp)
+                text = message.message, fontSize = 13.sp, color = if (message.isMe) ColorTextHuman else ColorTextGPT,
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
+                textAlign = TextAlign.Justify,
             )
         }
     }

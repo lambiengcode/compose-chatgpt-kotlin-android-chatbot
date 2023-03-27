@@ -1,75 +1,90 @@
 package com.chatgptlite.wanted
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
-import android.widget.ListView
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.navigation.findNavController
-import com.chatgptlite.wanted.ui.common.AppDrawer
+import com.chatgptlite.wanted.ui.common.AppBar
 import com.chatgptlite.wanted.ui.common.AppScaffold
 import com.chatgptlite.wanted.ui.conversations.Conversations
 import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.content.ContextCompat
-import com.chatgptlite.wanted.ui.theme.BackGroundColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.launch
+
 
 class MainActivity : ComponentActivity() {
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
-
         setContentView(
             ComposeView(this).apply {
                 consumeWindowInsets = false
                 setContent {
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-                    val systemUiController = rememberSystemUiController()
 
-                    SideEffect {
-                        systemUiController.setStatusBarColor(
-                            color = Color.Red,
-                        )
-                    }
-
-                    AppScaffold(
-                        drawerState = drawerState,
-                        onChatClicked = {
-//                            findNavController().popBackStack(R.id.main, false)
+                    // Intercepts back navigation when the drawer is open
+                    val scope = rememberCoroutineScope()
+//                    if (drawerState.isOpen) {
+//                        BackPressHandler {
 //                            scope.launch {
 //                                drawerState.close()
 //                            }
-                        },
-                        onProfileClicked = {
-//                            val bundle = bundleOf("userId" to it)
-//                            findNavController().navigate(R.id.nav_profile, bundle)
-//                            scope.launch {
-//                                drawerState.close()
-//                            }
+//                        }
+//                    }
+
+                    ChatGPTLiteTheme() {
+                        Surface(
+                            color = MaterialTheme.colorScheme.background,
+                        ) {
+                            AppScaffold(
+                                drawerState = drawerState,
+                                onChatClicked = {
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
+                                },
+                                onProfileClicked = {
+                                }
+                            ) {
+                                Scaffold(
+                                    modifier = Modifier.safeContentPadding(),
+                                    topBar = {
+                                        AppBar(
+                                            onClickMenu = {
+                                                scope.launch {
+                                                    drawerState.open()
+                                                }
+                                            }
+                                        )
+                                    },
+                                    content = {
+                                        Conversations()
+                                    },
+                                )
+                            }
                         }
-                    ) {
-                        Conversations()
                     }
                 }
             }
@@ -84,7 +99,7 @@ fun Greeting(name: String) {
             onPress = { offset -> },
             onDoubleTap = { offset -> },
             onLongPress = { offset -> },
-            onTap = { offset ->  }
+            onTap = { offset -> }
         )
         // or other similar...
     })

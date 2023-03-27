@@ -1,77 +1,100 @@
 package com.chatgptlite.wanted.ui.common
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.chatgptlite.wanted.R
 import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
+import com.chatgptlite.wanted.ui.theme.PrimaryColor
 
 @Composable
-fun AppDrawer (
+fun AppDrawer(
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) ->
     Unit
 ) {
-    // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
-    // below the status bar (y-axis)
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-        DrawerHeader()
-        DividerItem()
-        DrawerItemHeader("Chats")
-        ChatItem("ChatGPT", true) { onChatClicked("composers") }
-        ChatItem("GPT-4", false) { onChatClicked("droidcon-nyc") }
-        ChatItem("Settings", false) { onChatClicked("avc") }
-        DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-        DrawerItemHeader("Recent Profiles")
-        ProfileItem("lambiengcode (you)", "https://avatars.githubusercontent.com/u/60530946?v=4") { println("onClick my profile") }
+    ChatGPTLiteTheme() {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+            DrawerHeader()
+            DividerItem()
+            DrawerItemHeader("Chats")
+            ChatItem("What's Flutter?", Icons.Filled.Edit, true) { onChatClicked("composers") }
+            ChatItem(
+                "Do you know lambiengcode?",
+                Icons.Filled.Edit,
+                false
+            ) { onChatClicked("droidcon-nyc") }
+            ChatItem("What is Jetpack Compose", Icons.Filled.Edit, false) { onChatClicked("avc") }
+            DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+            DrawerItemHeader("Settings")
+            ChatItem("Settings", Icons.Filled.Settings, false) { onChatClicked("avc") }
+            ProfileItem(
+                "lambiengcode (author)",
+                "https://avatars.githubusercontent.com/u/60530946?v=4"
+            ) { println("onClick my profile") }
+        }
     }
 }
 
 @Composable
 private fun DrawerHeader() {
+    val paddingSizeModifier = Modifier
+        .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+        .background(
+            Color.Transparent,
+            shape = RoundedCornerShape(6.dp)
+        )
+        .size(34.dp)
+
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
-//        JetchatIcon(
-//            contentDescription = null,
-//            modifier = Modifier.size(24.dp)
-//        )
-//        Image(
-//            painter = painterResource(id = R.drawable.jetchat_logo),
-//            contentDescription = null,
-//            modifier = Modifier.padding(start = 8.dp)
-//        )
+        Image(
+            painter = rememberAsyncImagePainter("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC8HEVFhx8x5omLlo5kA2sCFHSa63WdpX1HJqxaCoyXOJVsEHo-TNfjPlmhHp0tLrs-8g&usqp=CAU"),
+            modifier = paddingSizeModifier.then(Modifier.clip(CircleShape)),
+            contentScale = ContentScale.Crop,
+            contentDescription = null
+        )
+        Column (modifier = Modifier.padding(horizontal = 12.dp)) {
+            Text(
+                "ChatGPT Lite",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = PrimaryColor
+            )
+            Text(
+                "Powered by OpenAI",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.White,
+            )
+        }
     }
 }
+
 @Composable
 private fun DrawerItemHeader(text: String) {
     Box(
@@ -89,7 +112,12 @@ private fun DrawerItemHeader(text: String) {
 }
 
 @Composable
-private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
+private fun ChatItem(
+    text: String,
+    icon: ImageVector = Icons.Filled.Edit,
+    selected: Boolean,
+    onChatClicked: () -> Unit
+) {
     val background = if (selected) {
         Modifier.background(MaterialTheme.colorScheme.primaryContainer)
     } else {
@@ -111,10 +139,12 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             MaterialTheme.colorScheme.onSurfaceVariant
         }
         Icon(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
+            icon,
             tint = iconTint,
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
-            contentDescription = null
+            modifier = Modifier
+                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+                .size(25.dp),
+            contentDescription = null,
         )
         Text(
             text,
@@ -181,6 +211,7 @@ fun DrawerPreview() {
         }
     }
 }
+
 @Composable
 @Preview
 fun DrawerPreviewDark() {
