@@ -13,7 +13,6 @@ import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
 @Composable
 fun AppScaffold (
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
-    onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -22,7 +21,6 @@ fun AppScaffold (
             drawerState = drawerState,
             drawerContent = {
                 AppDrawer (
-                    onProfileClicked = onProfileClicked,
                     onChatClicked = onChatClicked
                 )
             },

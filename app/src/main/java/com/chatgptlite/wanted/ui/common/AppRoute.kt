@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.chatgptlite.wanted.ui.conversations.Conversations
+import com.chatgptlite.wanted.ui.conversations.Conversation
 
 @Composable
 fun AppRoute(
@@ -26,7 +26,7 @@ fun AppRoute(
 //            val homeViewModel: HomeViewModel = viewModel(
 //                factory = HomeViewModel.provideFactory(appContainer.postsRepository)
 //            )
-            Conversations (
+            Conversation (
 
             )
         }

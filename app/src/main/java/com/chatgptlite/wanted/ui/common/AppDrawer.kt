@@ -35,7 +35,6 @@ import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
 
 @Composable
 fun AppDrawer(
-    onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -229,7 +228,7 @@ fun DrawerPreview() {
     ChatGPTLiteTheme {
         Surface {
             Column {
-                AppDrawer({}, {})
+                AppDrawer {}
             }
         }
     }
@@ -241,7 +240,7 @@ fun DrawerPreviewDark() {
     ChatGPTLiteTheme(darkTheme = true) {
         Surface {
             Column {
-                AppDrawer({}, {})
+                AppDrawer {}
             }
         }
     }

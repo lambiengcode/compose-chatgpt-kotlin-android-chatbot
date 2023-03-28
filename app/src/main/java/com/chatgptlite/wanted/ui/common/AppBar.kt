@@ -25,7 +25,6 @@ import com.chatgptlite.wanted.ui.theme.BackGroundColor
 
 @Composable
 fun AppBar(onClickMenu: () -> Unit) {
-
     ChatGPTLiteTheme() {
         Surface(
             shadowElevation = 4.dp,

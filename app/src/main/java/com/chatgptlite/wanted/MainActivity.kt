@@ -3,24 +3,24 @@ package com.chatgptlite.wanted
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.activity.compose.BackHandler
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.chatgptlite.wanted.ui.common.AppBar
 import com.chatgptlite.wanted.ui.common.AppScaffold
-import com.chatgptlite.wanted.ui.conversations.Conversations
+import com.chatgptlite.wanted.ui.conversations.Conversation
 import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
 import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: MainViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
@@ -34,16 +34,30 @@ class MainActivity : ComponentActivity() {
                 consumeWindowInsets = false
                 setContent {
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+                    viewModel
+                    val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
+
+                    if (drawerOpen) {
+                        // Open drawer and reset state in VM.
+                        LaunchedEffect(Unit) {
+                            // wrap in try-finally to handle interruption whiles opening drawer
+                            try {
+                                drawerState.open()
+                            } finally {
+                                viewModel.resetOpenDrawerAction()
+                            }
+                        }
+                    }
 
                     // Intercepts back navigation when the drawer is open
                     val scope = rememberCoroutineScope()
-//                    if (drawerState.isOpen) {
-//                        BackPressHandler {
-//                            scope.launch {
-//                                drawerState.close()
-//                            }
-//                        }
-//                    }
+                    if (drawerState.isOpen) {
+                        BackHandler {
+                            scope.launch {
+                                drawerState.close()
+                            }
+                        }
+                    }
 
                     ChatGPTLiteTheme() {
                         Surface(
@@ -55,9 +69,9 @@ class MainActivity : ComponentActivity() {
                                     scope.launch {
                                         drawerState.close()
                                     }
+
+                                    println(it)
                                 },
-                                onProfileClicked = {
-                                }
                             ) {
                                 Scaffold(
                                     modifier = Modifier.safeContentPadding(),
@@ -71,7 +85,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     },
                                     content = {
-                                        Conversations()
+                                        Conversation()
                                     },
                                 )
                             }
@@ -81,19 +95,6 @@ class MainActivity : ComponentActivity() {
             }
         )
     }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!", modifier = Modifier.pointerInput(Unit) {
-        detectTapGestures(
-            onPress = { offset -> },
-            onDoubleTap = { offset -> },
-            onLongPress = { offset -> },
-            onTap = { offset -> }
-        )
-        // or other similar...
-    })
 }
 
 @Preview(showBackground = true)

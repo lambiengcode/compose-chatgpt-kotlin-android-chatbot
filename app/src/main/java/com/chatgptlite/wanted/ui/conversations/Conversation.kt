@@ -1,14 +1,11 @@
 package com.chatgptlite.wanted.ui.conversations
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,13 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chatgptlite.wanted.data.fake.fakeMessages
 import com.chatgptlite.wanted.models.MessageModel
-import com.chatgptlite.wanted.ui.common.simpleVerticalScrollbar
 import com.chatgptlite.wanted.ui.conversations.components.TextInput
 import com.chatgptlite.wanted.ui.conversations.ui.theme.ChatGPTLiteTheme
 import com.chatgptlite.wanted.ui.theme.*
 
 @Composable
-fun Conversations() {
+fun Conversation() {
     ChatGPTLiteTheme(darkTheme = true) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -49,11 +45,11 @@ fun ColumnScope.MessageList(messages: List<MessageModel>) {
         Modifier
             .fillMaxWidth()
             .weight(1f, false)
-            .simpleVerticalScrollbar(
-                state = listState,
-                width = 4.dp,
-                color = MaterialTheme.colorScheme.secondary,
-            )
+//            .simpleVerticalScrollbar(
+//                state = listState,
+//                width = 4.dp,
+//                color = MaterialTheme.colorScheme.secondary,
+//            )
             .padding(horizontal = 16.dp),
         reverseLayout = true,
         state = listState,
