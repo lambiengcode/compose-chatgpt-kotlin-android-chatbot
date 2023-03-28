@@ -1,7 +1,7 @@
 package com.chatgptlite.wanted.models
 
 import androidx.compose.runtime.Immutable
-import java.util.Date
+import java.util.*
 
 @Immutable
 data class MessageModel (
