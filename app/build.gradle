@@ -65,6 +65,7 @@ dependencies {
     def nav_version = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("io.coil-kt:coil-compose:2.3.0")
-    // system bars customization
+
+    // System bars customization
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 }

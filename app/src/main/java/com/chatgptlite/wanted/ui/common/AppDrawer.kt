@@ -8,9 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -20,22 +18,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.chatgptlite.wanted.constants.urlToGithub
+import com.chatgptlite.wanted.constants.urlToImageAppIcon
+import com.chatgptlite.wanted.constants.urlToImageAuthor
 import com.chatgptlite.wanted.data.fake.fakeConversations
+import com.chatgptlite.wanted.helpers.UrlLauncher
 import com.chatgptlite.wanted.models.ConversationModel
 import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
-import com.chatgptlite.wanted.ui.theme.PrimaryColor
 
 @Composable
 fun AppDrawer(
     onProfileClicked: (String) -> Unit,
-    onChatClicked: (String) ->
-    Unit
+    onChatClicked: (String) -> Unit,
 ) {
+    val context = LocalContext.current
+
     ChatGPTLiteTheme() {
         Column(
             modifier = Modifier
@@ -46,14 +50,16 @@ fun AppDrawer(
             DrawerHeader()
             DividerItem()
             DrawerItemHeader("Chats")
-            HistoryConversations(conversations = fakeConversations)
+            HistoryConversations(conversations = fakeConversations, onChatClicked)
             DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
             DrawerItemHeader("Settings")
-            ChatItem("Settings", Icons.Filled.Settings, false) { onChatClicked("avc") }
+            ChatItem("Settings", Icons.Filled.Settings, false) { onChatClicked("Settings") }
             ProfileItem(
                 "lambiengcode (author)",
-                "https://avatars.githubusercontent.com/u/60530946?v=4"
-            ) { println("onClick my profile") }
+                urlToImageAuthor,
+            ) {
+                UrlLauncher().openUrl(context = context, urlToGithub)
+            }
         }
     }
 }
@@ -62,16 +68,12 @@ fun AppDrawer(
 private fun DrawerHeader() {
     val paddingSizeModifier = Modifier
         .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
-        .background(
-            Color.Transparent,
-            shape = RoundedCornerShape(6.dp)
-        )
         .size(34.dp)
 
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
         Image(
-            painter = rememberAsyncImagePainter("https://res.cloudinary.com/apideck/image/upload/v1672442492/marketplaces/ckhg56iu1mkpc0b66vj7fsj3o/listings/-4-ans_frontend_assets.images.poe.app_icon.png-26-8aa0a2e5f237894d_tbragv.png"),
-            modifier = paddingSizeModifier.then(Modifier.clip(CircleShape)),
+            painter = rememberAsyncImagePainter(urlToImageAppIcon),
+            modifier = paddingSizeModifier.then(Modifier.clip(RoundedCornerShape(6.dp))),
             contentScale = ContentScale.Crop,
             contentDescription = null
         )
@@ -80,12 +82,12 @@ private fun DrawerHeader() {
                 "ChatGPT Lite",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = PrimaryColor
+                color = MaterialTheme.colorScheme.secondary,
             )
             Text(
                 "Powered by OpenAI",
                 fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Normal,
                 color = Color.White,
             )
         }
@@ -93,19 +95,24 @@ private fun DrawerHeader() {
 }
 
 @Composable
-private fun ColumnScope.HistoryConversations(conversations: List<ConversationModel>) {
+private fun ColumnScope.HistoryConversations(
+    conversations: List<ConversationModel>,
+    onChatClicked: (String) -> Unit
+) {
     LazyColumn(
         Modifier
             .fillMaxWidth()
             .weight(1f, false)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 12.dp),
     ) {
         items(conversations.size) { index ->
             ChatItem(
                 text = conversations[index].title,
-                Icons.Filled.EditNote,
+                Icons.Filled.Message,
                 selected = index == 0,
-                onChatClicked = {},
+                onChatClicked = {
+                    onChatClicked(conversations[index].id)
+                },
             )
         }
     }
