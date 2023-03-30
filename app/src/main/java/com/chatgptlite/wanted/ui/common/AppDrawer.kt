@@ -11,12 +11,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.AddComment
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -81,25 +82,41 @@ private fun DrawerHeader() {
         .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
         .size(34.dp)
 
-    Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
-        Image(
-            painter = rememberAsyncImagePainter(urlToImageAppIcon),
-            modifier = paddingSizeModifier.then(Modifier.clip(RoundedCornerShape(6.dp))),
-            contentScale = ContentScale.Crop,
-            contentDescription = null
-        )
-        Column(modifier = Modifier.padding(horizontal = 12.dp)) {
-            Text(
-                "ChatGPT Lite",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.secondary,
+    Row(verticalAlignment = CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(modifier = Modifier
+            .padding(16.dp)
+            .weight(1f), verticalAlignment = CenterVertically) {
+            Image(
+                painter = rememberAsyncImagePainter(urlToImageAppIcon),
+                modifier = paddingSizeModifier.then(Modifier.clip(RoundedCornerShape(6.dp))),
+                contentScale = ContentScale.Crop,
+                contentDescription = null
             )
-            Text(
-                "Powered by OpenAI",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.White,
+            Column(modifier = Modifier.padding(horizontal = 12.dp)) {
+                Text(
+                    "ChatGPT Lite",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+                Text(
+                    "Powered by OpenAI",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White,
+                )
+            }
+        }
+
+        IconButton(
+            onClick = {
+            },
+        ) {
+            Icon(
+                Icons.Filled.WbSunny,
+                "backIcon",
+                modifier = Modifier.size(26.dp),
+                tint = MaterialTheme.colorScheme.primary,
             )
         }
     }

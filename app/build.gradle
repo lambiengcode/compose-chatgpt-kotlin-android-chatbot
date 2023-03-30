@@ -8,6 +8,8 @@ plugins {
     // DI
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -91,6 +93,14 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.44"
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    // Networking
+    def retrofit_version = '2.9.0'
+    def okhttp_version = '4.10.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 }
 
 // Allow references to generated code

@@ -5,8 +5,8 @@ package com.chatgptlite.wanted.ui.conversations
 import androidx.lifecycle.ViewModel
 import com.chatgptlite.wanted.data.remote.ConversationRepository
 import com.chatgptlite.wanted.data.remote.MessageRepository
-import com.chatgptlite.wanted.models.ConversationModel
-import com.chatgptlite.wanted.models.MessageModel
+import com.chatgptlite.wanted.data.remote.OpenAIRepositoryImpl
+import com.chatgptlite.wanted.models.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import java.util.*
@@ -20,6 +20,7 @@ import javax.inject.Inject
 class ConversationViewModel @Inject constructor(
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository,
+    private val openAIRepo: OpenAIRepositoryImpl,
 ) : ViewModel() {
     private val _currentConversation: MutableStateFlow<String> =
         MutableStateFlow(Date().time.toString())
@@ -44,7 +45,6 @@ class ConversationViewModel @Inject constructor(
         if (_conversations.value.isNotEmpty()) {
             _currentConversation.value = _conversations.value.first().id
             fetchMessages()
-            println("DONE")
         }
 
         _isFetching.value = false
@@ -58,25 +58,40 @@ class ConversationViewModel @Inject constructor(
         _isFetching.value = false
     }
 
-    fun sendMessage(message: String) {
+    suspend fun sendMessage(message: String) {
         if (getMessagesByConversation(_currentConversation.value).isEmpty()) {
             createConversationRemote(message)
         }
 
         val newMessageModel: MessageModel = MessageModel(
             question = message,
+            answer = "Let me thinking...",
             conversationId = _currentConversation.value,
         )
 
         val currentListMessage: MutableList<MessageModel> =
-            getMessagesByConversation(_currentConversation.value)
-
-        messageRepo.createMessage(newMessageModel)
+            getMessagesByConversation(_currentConversation.value).toMutableList()
 
         // Insert message to list
         currentListMessage.add(0, newMessageModel)
-
         setMessages(currentListMessage)
+
+        // Execute API OpenAI
+        val flow: Flow<String> = openAIRepo.textCompletionsWithStream(
+            TextCompletionsParam(
+                messagesTurbo = getMessagesParamsTurbo(_currentConversation.value)
+            )
+        )
+
+        var answerFromGPT: String = ""
+
+        flow.collect {
+            answerFromGPT += it
+            updateLocalAnswer(answerFromGPT.trim())
+        }
+
+        // Save to Firestore
+        messageRepo.createMessage(newMessageModel.copy(answer = answerFromGPT))
     }
 
     private fun createConversationRemote(title: String) {
@@ -103,7 +118,29 @@ class ConversationViewModel @Inject constructor(
     private fun getMessagesByConversation(conversationId: String): MutableList<MessageModel> {
         if (_messages.value[conversationId] == null) return mutableListOf()
 
-        return _messages.value[conversationId]!!
+        val messagesMap: HashMap<String, MutableList<MessageModel>> =
+            _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
+
+        return messagesMap[conversationId]!!
+    }
+
+    private fun getMessagesParamsTurbo(conversationId: String): List<MessageTurbo> {
+        if (_messages.value[conversationId] == null) return listOf()
+
+        val messagesMap: HashMap<String, MutableList<MessageModel>> =
+            _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
+
+        val response:MutableList<MessageTurbo> = mutableListOf()
+
+        for (message in messagesMap[conversationId]!!.reversed()) {
+            response.add(MessageTurbo(content = message.question))
+
+            if (message.answer != "Let me thinking...") {
+                response.add(MessageTurbo(content = message.answer, role = TurboRole.user))
+            }
+        }
+
+        return response.toList()
     }
 
     private suspend fun fetchMessages() {
@@ -116,8 +153,18 @@ class ConversationViewModel @Inject constructor(
         }
     }
 
+    private fun updateLocalAnswer(answer: String) {
+        val currentListMessage: MutableList<MessageModel> =
+            getMessagesByConversation(_currentConversation.value).toMutableList()
+
+        currentListMessage[0] = currentListMessage[0].copy(answer = answer)
+
+        setMessages(currentListMessage)
+    }
+
     private fun setMessages(messages: MutableList<MessageModel>) {
-        val messagesMap: HashMap<String, MutableList<MessageModel>> = _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
+        val messagesMap: HashMap<String, MutableList<MessageModel>> =
+            _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
 
         messagesMap[_currentConversation.value] = messages
 

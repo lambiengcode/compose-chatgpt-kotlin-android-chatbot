@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.material3.*
 import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.chatgptlite.wanted.ui.conversations.ConversationViewModel

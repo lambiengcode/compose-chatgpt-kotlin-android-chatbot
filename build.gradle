@@ -5,6 +5,8 @@ buildscript {
     dependencies {
         // Add the dependency for the Google services Gradle plugin
         classpath 'com.google.gms:google-services:4.3.15'
+        // Other classpath declarations
+        classpath "org.jetbrains.kotlin:kotlin-serialization:1.7.0"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

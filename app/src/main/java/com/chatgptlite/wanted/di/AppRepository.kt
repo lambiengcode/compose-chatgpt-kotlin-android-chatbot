@@ -1,9 +1,6 @@
 package com.chatgptlite.wanted.di
 
-import com.chatgptlite.wanted.data.remote.ConversationRepository
-import com.chatgptlite.wanted.data.remote.ConversationRepositoryImpl
-import com.chatgptlite.wanted.data.remote.MessageRepository
-import com.chatgptlite.wanted.data.remote.MessageRepositoryImpl
+import com.chatgptlite.wanted.data.remote.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,4 +18,9 @@ abstract class RepositoryModule {
     abstract fun messageRepository(
         repo: MessageRepositoryImpl
     ): MessageRepository
+
+    @Binds
+    abstract fun openAIRepository(
+        repo: OpenAIRepositoryImpl
+    ): OpenAIRepository
 }

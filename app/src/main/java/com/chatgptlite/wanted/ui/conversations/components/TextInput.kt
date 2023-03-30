@@ -13,13 +13,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.chatgptlite.wanted.ui.conversations.ConversationViewModel
-import com.chatgptlite.wanted.ui.theme.PrimaryColor
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextInput(
     conversationViewModel: ConversationViewModel = hiltViewModel(),
 ) {
+    val scope = rememberCoroutineScope()
     var text by remember { mutableStateOf(TextFieldValue("")) }
 
     Box(
@@ -52,12 +53,16 @@ fun TextInput(
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedTextColor = PrimaryColor,
+                            focusedTextColor = Color.White,
                         ),
                     )
                     IconButton(onClick = {
-                        conversationViewModel.sendMessage(text.text)
-                        text = TextFieldValue("")
+                        scope.launch {
+                            val textClone = text.text.toString()
+                            text = TextFieldValue("")
+                            conversationViewModel.sendMessage(textClone)
+
+                        }
                     }) {
                         Icon(
                             Icons.Filled.Send,

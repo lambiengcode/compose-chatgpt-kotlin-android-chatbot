@@ -74,8 +74,6 @@ class MainActivity : ComponentActivity() {
                                     scope.launch {
                                         drawerState.close()
                                     }
-
-                                    println(it)
                                 },
                                 onNewChatClicked = {
                                     scope.launch {

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,9 +30,11 @@ fun Conversation() {
             modifier = Modifier.fillMaxSize(),
             color = BackGroundColor,
         ) {
-            Box(Modifier.fillMaxSize())  {
+            Box(Modifier.fillMaxSize()) {
                 Column(Modifier.fillMaxSize()) {
-                    MessageList(modifier = Modifier.weight(1f))
+                    MessageList(modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 16.dp))
                     TextInput()
                 }
             }
