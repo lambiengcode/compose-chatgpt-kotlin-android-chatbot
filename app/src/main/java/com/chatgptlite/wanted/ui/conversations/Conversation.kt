@@ -49,10 +49,10 @@ fun MessageList(
     modifier: Modifier = Modifier,
     conversationViewModel: ConversationViewModel = hiltViewModel(),
 ) {
+    val listState = rememberLazyListState()
 
     val conversationId by conversationViewModel.currentConversationState.collectAsState()
     val messagesMap by conversationViewModel.messagesState.collectAsState()
-    val listState = rememberLazyListState()
 
     val messages: List<MessageModel> =
         if (messagesMap[conversationId] == null) listOf() else messagesMap[conversationId]!!

@@ -85,9 +85,12 @@ class MainActivity : ComponentActivity() {
                             ) {
                                Column( modifier = Modifier
                                    .fillMaxSize()) {
-                                   AppBar {
-
-                                   }
+                                   AppBar (onClickMenu = {
+                                       scope.launch {
+                                           drawerState.open()
+                                       }
+                                   })
+                                   Divider()
                                    Conversation()
                                }
                             }

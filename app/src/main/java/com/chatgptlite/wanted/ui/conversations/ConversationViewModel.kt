@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.chatgptlite.wanted.ui.conversations
 
 import androidx.lifecycle.ViewModel
@@ -86,7 +88,7 @@ class ConversationViewModel @Inject constructor(
 
         conversationRepo.newConversation(newConversation)
 
-        val conversations = _conversations.value
+        val conversations = _conversations.value.toMutableList()
         conversations.add(0, newConversation)
 
         _conversations.value = conversations
@@ -115,10 +117,10 @@ class ConversationViewModel @Inject constructor(
     }
 
     private fun setMessages(messages: MutableList<MessageModel>) {
-        val messagesMap: HashMap<String, MutableList<MessageModel>> = _messages.value
+        val messagesMap: HashMap<String, MutableList<MessageModel>> = _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
 
         messagesMap[_currentConversation.value] = messages
 
-        _messages.update { messagesMap }
+        _messages.value = messagesMap
     }
 }
