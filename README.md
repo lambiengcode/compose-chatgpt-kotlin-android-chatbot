@@ -1,5 +1,4 @@
-## Compose ChatGPT (In Progress):beers::beers: 
-
+# Compose ChatGPT (In Progress):lion::beers: 
 
 <p align="justify">
 Compose ChatGPT is a sample ChatGPT app built with Jetpack Compose.
@@ -7,14 +6,29 @@ Compose ChatGPT is a sample ChatGPT app built with Jetpack Compose.
 To try out this sample app, use the latest stable version of Android Studio. You can clone this repository or import the project from Android Studio following the steps here.
 </p>
 
+## Screenshots
 
-This sample showcases:
+<p>
+<img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_chatgpt_lite.gif?raw=true" width="200px"/>
+<img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_1.jpeg?raw=true" width="200px"/>
+<img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_2.jpeg?raw=true" width="200px"/>
+</p>
 
-- UI state management
-- Integration with Architecture Components: Navigation, Fragments, ViewModel
-- Back button handling
-- Text Input and focus management
-- Multiple types of animations and transitions
-- Saved state across configuration changes
-- Material Design 3 theming and Material You dynamic color
-- UI tests
+## Setup project to run in your local machine
+
+***Setup Firebase***
+- Create your firebase project and enable ***Firestore***
+- Put file ***google-services.json*** into ***app/***
+
+***Setup OpenAI ApiKey***
+- Generate api key from OpenAI console: https://platform.openai.com/account/api-keys
+- Edit value of ***openAIApiKey*** in file ***app/src/main/java/com/chatgptlite/wanted/constants/Constants.kt*** to your key
+
+
+## Features
+
+- [x] ChatBot with GPT
+- [ ] Stop generating
+- [ ] Delete conversation
+- [ ] Settings for ChatGPT
+- [ ] Light/Dart Themes
