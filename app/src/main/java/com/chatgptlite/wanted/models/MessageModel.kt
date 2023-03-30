@@ -1,11 +1,11 @@
 package com.chatgptlite.wanted.models
 
-import androidx.compose.runtime.Immutable
 import java.util.*
 
-@Immutable
 data class MessageModel (
-    val message: String,
-    val isMe: Boolean,
-    val createdAt: Date
+    var id: String = Date().time.toString(),
+    var conversationId: String = "",
+    var question: String = "",
+    var answer: String = "",
+    var createdAt: Date = Date(),
 )

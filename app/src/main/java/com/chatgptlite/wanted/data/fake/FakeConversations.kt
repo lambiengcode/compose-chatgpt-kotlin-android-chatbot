@@ -7,16 +7,16 @@ val fakeConversations: List<ConversationModel> = listOf(
     ConversationModel(
         id = "1",
         title = "What's Flutter?",
-        date = Date(),
+        createdAt = Date(),
     ),
     ConversationModel(
         id = "2",
         title = "What's Compose?",
-        date = Date(),
+        createdAt = Date(),
     ),
     ConversationModel(
         id = "3",
         title = "What's ChatGPT?",
-        date = Date(),
+        createdAt = Date(),
     ),
 )

@@ -10,32 +10,33 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.chatgptlite.wanted.ui.common.AppBar
 import com.chatgptlite.wanted.ui.common.AppScaffold
 import com.chatgptlite.wanted.ui.conversations.Conversation
 import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContentView(
             ComposeView(this).apply {
                 consumeWindowInsets = false
                 setContent {
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-                    viewModel
-                    val drawerOpen by viewModel.drawerShouldBeOpened.collectAsState()
+                    val drawerOpen by mainViewModel.drawerShouldBeOpened.collectAsState()
 
                     if (drawerOpen) {
                         // Open drawer and reset state in VM.
@@ -44,18 +45,22 @@ class MainActivity : ComponentActivity() {
                             try {
                                 drawerState.open()
                             } finally {
-                                viewModel.resetOpenDrawerAction()
+                                mainViewModel.resetOpenDrawerAction()
                             }
                         }
                     }
 
                     // Intercepts back navigation when the drawer is open
                     val scope = rememberCoroutineScope()
-                    if (drawerState.isOpen) {
-                        BackHandler {
+                    val focusManager = LocalFocusManager.current
+
+                    BackHandler {
+                        if (drawerState.isOpen) {
                             scope.launch {
                                 drawerState.close()
                             }
+                        } else {
+                            focusManager.clearFocus()
                         }
                     }
 
@@ -72,22 +77,19 @@ class MainActivity : ComponentActivity() {
 
                                     println(it)
                                 },
+                                onNewChatClicked = {
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
+                                }
                             ) {
-                                Scaffold(
-                                    modifier = Modifier.safeContentPadding(),
-                                    topBar = {
-                                        AppBar(
-                                            onClickMenu = {
-                                                scope.launch {
-                                                    drawerState.open()
-                                                }
-                                            }
-                                        )
-                                    },
-                                    content = {
-                                        Conversation()
-                                    },
-                                )
+                               Column( modifier = Modifier
+                                   .fillMaxSize()) {
+                                   AppBar {
+
+                                   }
+                                   Conversation()
+                               }
                             }
                         }
                     }

@@ -23,6 +23,7 @@ import com.chatgptlite.wanted.constants.urlToImageAppIcon
 import com.chatgptlite.wanted.ui.conversations.ui.theme.ChatGPTLiteTheme
 import com.chatgptlite.wanted.ui.theme.BackGroundColor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(onClickMenu: () -> Unit) {
     ChatGPTLiteTheme() {

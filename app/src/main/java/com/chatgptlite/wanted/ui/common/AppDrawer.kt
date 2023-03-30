@@ -8,9 +8,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.AddComment
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -19,23 +25,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.chatgptlite.wanted.constants.urlToGithub
 import com.chatgptlite.wanted.constants.urlToImageAppIcon
 import com.chatgptlite.wanted.constants.urlToImageAuthor
-import com.chatgptlite.wanted.data.fake.fakeConversations
 import com.chatgptlite.wanted.helpers.UrlLauncher
 import com.chatgptlite.wanted.models.ConversationModel
+import com.chatgptlite.wanted.ui.conversations.ConversationViewModel
 import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppDrawer(
     onChatClicked: (String) -> Unit,
+    onNewChatClicked: () -> Unit,
+    conversationViewModel: ConversationViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
 
@@ -49,7 +57,11 @@ fun AppDrawer(
             DrawerHeader()
             DividerItem()
             DrawerItemHeader("Chats")
-            HistoryConversations(conversations = fakeConversations, onChatClicked)
+            ChatItem("New Chat", Icons.Outlined.AddComment, false) {
+                onNewChatClicked()
+                conversationViewModel.newConversation()
+            }
+            HistoryConversations(onChatClicked)
             DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
             DrawerItemHeader("Settings")
             ChatItem("Settings", Icons.Filled.Settings, false) { onChatClicked("Settings") }
@@ -95,22 +107,29 @@ private fun DrawerHeader() {
 
 @Composable
 private fun ColumnScope.HistoryConversations(
-    conversations: List<ConversationModel>,
-    onChatClicked: (String) -> Unit
+    onChatClicked: (String) -> Unit,
+    conversationViewModel: ConversationViewModel = hiltViewModel(),
 ) {
+    val scope = rememberCoroutineScope()
+    val conversationId: String by conversationViewModel.currentConversationState.collectAsState()
+    val conversations: List<ConversationModel> by conversationViewModel.conversationsState.collectAsState()
+
     LazyColumn(
         Modifier
             .fillMaxWidth()
-            .weight(1f, false)
-            .padding(horizontal = 12.dp),
+            .weight(1f, false),
     ) {
         items(conversations.size) { index ->
             ChatItem(
                 text = conversations[index].title,
                 Icons.Filled.Message,
-                selected = index == 0,
+                selected = conversations[index].id == conversationId,
                 onChatClicked = {
                     onChatClicked(conversations[index].id)
+
+                    scope.launch {
+                        conversationViewModel.onConversation(conversations[index])
+                    }
                 },
             )
         }
@@ -220,28 +239,4 @@ fun DividerItem(modifier: Modifier = Modifier) {
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
-}
-
-@Composable
-@Preview
-fun DrawerPreview() {
-    ChatGPTLiteTheme {
-        Surface {
-            Column {
-                AppDrawer {}
-            }
-        }
-    }
-}
-
-@Composable
-@Preview
-fun DrawerPreviewDark() {
-    ChatGPTLiteTheme(darkTheme = true) {
-        Surface {
-            Column {
-                AppDrawer {}
-            }
-        }
-    }
 }

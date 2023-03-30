@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "667179946559",
+    "project_id": "chatgpt-compose",
+    "storage_bucket": "chatgpt-compose.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667179946559:android:fb1d6c39e9d32c4fd25e8a",
+        "android_client_info": {
+          "package_name": "com.chatgptlite.wanted"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667179946559-d86doom2s4bmvi30maellt3hg9mll5au.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV_zuuvvcAUD_31MyZDDCs7MMlZYu0NR8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667179946559-d86doom2s4bmvi30maellt3hg9mll5au.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
