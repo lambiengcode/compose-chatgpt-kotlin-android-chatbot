@@ -31,8 +31,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false                // make app non-debuggable
+            crunchPngs true                 // shrink images
+            minifyEnabled true              // obfuscate code and remove unused code
+            shrinkResources true            // shrink and remove unused resources
+            multiDexEnabled true
         }
     }
     compileOptions {
