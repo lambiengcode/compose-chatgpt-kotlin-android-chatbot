@@ -1,9 +1,9 @@
-# Compose ChatGPT (In Progress):lion::beers: 
+# Compose ChatGPT (In Progress):beers::beers: 
 
 <p align="justify">
-Compose ChatGPT is a sample ChatGPT app built with Jetpack Compose.
+Jetpack Compose ChatGPT app is a sample ChatGPT app built with Jetpack Compose.
 <img src="https://res.cloudinary.com/apideck/image/upload/v1672442492/marketplaces/ckhg56iu1mkpc0b66vj7fsj3o/listings/-4-ans_frontend_assets.images.poe.app_icon.png-26-8aa0a2e5f237894d_tbragv.png?raw=true" width="160px" height=auto align="right" alt="Computador"/>
-To try out this sample app, use the latest stable version of Android Studio. You can clone this repository or import the project from Android Studio following the steps here.
+To try out this sample app, use the latest stable version of <a href="https://developer.android.com/studio">Android Studio</a>. You can clone this repository or import the project from Android Studio following the steps <a href="https://developer.android.com/jetpack/compose/setup#sample">here</a>.
 </p>
 
 ## Screenshots
