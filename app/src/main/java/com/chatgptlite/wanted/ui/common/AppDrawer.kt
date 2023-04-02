@@ -84,9 +84,11 @@ private fun DrawerHeader() {
         .size(34.dp)
 
     Row(verticalAlignment = CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-        Row(modifier = Modifier
-            .padding(16.dp)
-            .weight(1f), verticalAlignment = CenterVertically) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .weight(1f), verticalAlignment = CenterVertically
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(urlToImageAppIcon),
                 modifier = paddingSizeModifier.then(Modifier.clip(RoundedCornerShape(6.dp))),

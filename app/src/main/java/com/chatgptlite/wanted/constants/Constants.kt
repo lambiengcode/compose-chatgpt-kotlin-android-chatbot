@@ -7,4 +7,5 @@ const val urlToImageAuthor = "https://avatars.githubusercontent.com/u/60530946?v
 const val urlToAvatarGPT = "https://gptapk.com/wp-content/uploads/2023/02/chatgpt-icon.png"
 const val urlToGithub = "https://github.com/lambiengcode"
 
+const val matchResultString = "\"text\":"
 const val matchResultTurboString = "\"content\":"

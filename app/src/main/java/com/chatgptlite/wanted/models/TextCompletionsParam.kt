@@ -51,6 +51,9 @@ data class TextCompletionsParam(
         result = 31 * result + messagesTurbo.hashCode()
         return result
     }
+
+    val isTurbo: Boolean
+        get() = model == GPTModel.gpt35Turbo
 }
 
 fun TextCompletionsParam.toJson(): JsonObject {

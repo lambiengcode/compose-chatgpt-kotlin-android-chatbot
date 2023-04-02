@@ -79,6 +79,7 @@ class ConversationViewModel @Inject constructor(
         // Execute API OpenAI
         val flow: Flow<String> = openAIRepo.textCompletionsWithStream(
             TextCompletionsParam(
+                promptText = getPrompt(_currentConversation.value),
                 messagesTurbo = getMessagesParamsTurbo(_currentConversation.value)
             )
         )
@@ -124,13 +125,30 @@ class ConversationViewModel @Inject constructor(
         return messagesMap[conversationId]!!
     }
 
+    private fun getPrompt(conversationId: String): String {
+        if (_messages.value[conversationId] == null) return ""
+
+        val messagesMap: HashMap<String, MutableList<MessageModel>> =
+            _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
+
+        var response: String = ""
+
+        for (message in messagesMap[conversationId]!!.reversed()) {
+            response += """
+Human:${message.question.trim()}
+Bot:${if (message.answer == "Let me thinking...") "" else message.answer.trim()}"""
+        }
+
+        return response
+    }
+
     private fun getMessagesParamsTurbo(conversationId: String): List<MessageTurbo> {
         if (_messages.value[conversationId] == null) return listOf()
 
         val messagesMap: HashMap<String, MutableList<MessageModel>> =
             _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
 
-        val response:MutableList<MessageTurbo> = mutableListOf()
+        val response: MutableList<MessageTurbo> = mutableListOf()
 
         for (message in messagesMap[conversationId]!!.reversed()) {
             response.add(MessageTurbo(content = message.question))
