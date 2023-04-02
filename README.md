@@ -1,9 +1,15 @@
-# Compose ChatGPT (In Progress):beers::beers: 
+# :lion: Compose ChatGPT Kotlin - Android Chatbot (In Progress) 
+> _This README is written by ChatGPT_
 
 <p align="justify">
-Jetpack Compose ChatGPT app is a sample ChatGPT app built with Jetpack Compose.
-<img src="https://res.cloudinary.com/apideck/image/upload/v1672442492/marketplaces/ckhg56iu1mkpc0b66vj7fsj3o/listings/-4-ans_frontend_assets.images.poe.app_icon.png-26-8aa0a2e5f237894d_tbragv.png?raw=true" width="160px" height=auto align="right" alt="Computador"/>
-To try out this sample app, use the latest stable version of <a href="https://developer.android.com/studio">Android Studio</a>. You can clone this repository or import the project from Android Studio following the steps <a href="https://developer.android.com/jetpack/compose/setup#sample">here</a>.
+<img src="https://res.cloudinary.com/apideck/image/upload/v1672442492/marketplaces/ckhg56iu1mkpc0b66vj7fsj3o/listings/-4-ans_frontend_assets.images.poe.app_icon.png-26-8aa0a2e5f237894d_tbragv.png?raw=true" width="190px" height=auto align="right" alt="Computador"/>
+Compose ChatGPT Kotlin is an open-source Android chatbot application built using Jetpack Compose and Kotlin programming language. It integrates with OpenAI's GPT-3 API to generate human-like responses to user messages. The app is designed to be easy to use and highly customizable, allowing users to easily integrate the chatbot functionality into their existing projects.
+
+This project showcases the use of modern Android development tools and techniques, including Jetpack Compose for building responsive UIs, Kotlin Coroutines for asynchronous programming, and Dagger Hilt for dependency injection. It also demonstrates how to use the OpenAI GPT-3 API to create a powerful and intelligent chatbot.<br/>
+
+The project has a well-organized folder structure that makes it easy to navigate and understand the codebase. The code is well-documented and follows best practices for clean and maintainable code.<br/>
+
+Overall, Compose ChatGPT Kotlin is a powerful and flexible chatbot solution that can be easily integrated into any Android project. With its modern architecture and powerful features, it is an excellent example of how to build high-quality Android applications using the latest tools and techniques.
 </p>
 
 ## Screenshots
@@ -14,16 +20,70 @@ To try out this sample app, use the latest stable version of <a href="https://de
 <img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_2.jpeg?raw=true" width="200px"/>
 </p>
 
-## Setup project to run in your local machine
 
-***Setup Firebase***
-- Create your firebase project and enable ***Firestore***
-- Put file ***google-services.json*** into ***app/***
+## Requirements
+- Android Studio Arctic Fox or later
+- OpenAI API Key
+- Firebase
 
-***Setup OpenAI ApiKey***
-- Generate api key from OpenAI console: https://platform.openai.com/account/api-keys
-- Edit value of ***openAIApiKey*** in file ***app/src/main/java/com/chatgptlite/wanted/constants/Constants.kt*** to your key
 
+## Getting Started
+
+1. Clone the repository.
+2. Setup your Firebase and put file ***google-services.json*** into ***app/***
+3. Obtain an OpenAI API Key from the OpenAI website.
+4. In the ***app/src/main/java/com/chatgptlite/wanted/constants/Constants.kt*** file, add the following line and replace <your-api-key> with your actual API key:
+openAIApiKey=<your-api-key>
+5. Build and run the app on an emulator or physical device.
+
+## Directory Structure
+
+```terminal
+.
+├── app
+│   ├── build.gradle
+│   ├── proguard-rules.pro
+│   ├── src
+│   │   ├── androidTest
+│   │   ├── main
+│   │   │   ├── java/com/chatgptlite/wanted
+│   │   │   │   ├── constants
+│   │   │   │   ├── data
+│   │   │   │   ├── di
+│   │   │   │   ├── helpers
+│   │   │   │   ├── models
+│   │   │   │   ├── ui
+│   │   │   │   └── MainActivity.kt
+│   │   │   │   └── MainViewModel.kt
+│   │   │   ├── res
+│   │   │   └── AndroidManifest.xml
+│   │   ├── test
+│   │   └── ...
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradle.properties
+├── gradlew
+├── gradlew.bat
+└── settings.gradle
+```
+
+The ***app*** directory contains all the source code and resources of the application. It contains a build.gradle file, which is used to configure the build process for the application, and a proguard-rules.pro file, which contains rules for ProGuard, a tool used to shrink and obfuscate code.
+
+Within the ***src*** directory, there are two subdirectories: androidTest and main. The androidTest directory contains integration tests for the application on Android. The main directory contains the majority of the source code and resources for the application, and is further broken down into subdirectories:
+
+- `constants`: This directory contains constant values used throughout the application.
+- `data`: This directory contains the data layer of the application, including repositories and data sources.
+- `di`: This directory contains the Dependency Injection setup for the application.
+- `helpers`: This directory contains utility classes used throughout the application.
+- `models`: This directory contains the data models used throughout the application.
+- `ui`: This directory contains the user interface components of the application, including Activities, Fragments, and Composables.
+- `MainActivity.kt`: This file contains the implementation of the main activity for the application.
+- `MainViewModel.kt`: This file contains the implementation of the main view model for the application.
+
+The project also contains other files and directories at the root level, including the build.gradle file, which is used to configure the build process for the entire project, the gradle directory, which contains files related to the Gradle build system, and the gradlew and gradlew.bat scripts, which are used to run Gradle commands. The gradle.properties file contains properties used by the Gradle build system, and the settings.gradle file is used to configure the Gradle settings for the project.
 
 ## Features
 
@@ -41,7 +101,20 @@ To try out this sample app, use the latest stable version of <a href="https://de
 - [ ] Settings for ChatGPT
 - [ ] Light/Dart Themes
 
-### :butterfly: License
+## Acknowledgments
+- Jetpack Compose
+- Retrofit
+- [OpenAI GPT-3 API](https://beta.openai.com/docs/api-reference/introduction)
+- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+
+## Contributing
+Contributions are welcome! Please feel free to submit a pull request or open an issue if you encounter any problems or have suggestions for improvements.
+
+## Contact Information
+
+If you have any questions or suggestions related to this application, please contact me via email: lambiengcode@gmail.com.
+
+## License
 
 ```terminal
 MIT License
