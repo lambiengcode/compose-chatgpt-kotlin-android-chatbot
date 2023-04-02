@@ -30,6 +30,12 @@ To try out this sample app, use the latest stable version of <a href="https://de
 - [x] New Chat
 - [x] Chat History
 - [x] ChatBot with ChatGPT
+  - [x] stream: true
+    - [x] gpt-3.5-turbo
+    - [x] text-davinci-003, text-curie-001, text-babbage-001, text-ada-001
+  - [ ] stream: false
+    - [ ] gpt-3.5-turbo
+    - [ ] text-davinci-003, text-curie-001, text-babbage-001, text-ada-001
 - [ ] Stop generating
 - [ ] Delete conversation
 - [ ] Settings for ChatGPT
