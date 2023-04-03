@@ -148,7 +148,12 @@ Bot:${if (message.answer == "Let me thinking...") "" else message.answer.trim()}
         val messagesMap: HashMap<String, MutableList<MessageModel>> =
             _messages.value.clone() as HashMap<String, MutableList<MessageModel>>
 
-        val response: MutableList<MessageTurbo> = mutableListOf()
+        val response: MutableList<MessageTurbo> = mutableListOf(
+            MessageTurbo(
+                role = TurboRole.system,
+                content = "Markdown style if exists code"
+            )
+        )
 
         for (message in messagesMap[conversationId]!!.reversed()) {
             response.add(MessageTurbo(content = message.question))

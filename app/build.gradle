@@ -105,6 +105,12 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    // UI/UX Utils
+    def richtext_version = '0.16.0'
+    implementation "com.halilibo.compose-richtext:richtext-commonmark:${richtext_version}"
+    implementation "com.halilibo.compose-richtext:richtext-ui-material:${richtext_version}"
+    implementation "com.halilibo.compose-richtext:richtext-ui-material3:${richtext_version}"
 }
 
 // Allow references to generated code
