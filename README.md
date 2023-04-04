@@ -108,6 +108,10 @@ The project also contains other files and directories at the root level, includi
 - [OpenAI GPT-3 API](https://beta.openai.com/docs/api-reference/introduction)
 - [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=lambiengcode/lambiengcode,lambiengcode/compose-chatgpt-kotlin-android-chatbot&type=Date)](https://star-history.com/#lambiengcode/lambiengcode&lambiengcode/compose-chatgpt-kotlin-android-chatbot&Date)
+
 ## Contributing
 Contributions are welcome! Please feel free to submit a pull request or open an issue if you encounter any problems or have suggestions for improvements.
 
