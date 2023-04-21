@@ -63,8 +63,10 @@ class MainActivity : ComponentActivity() {
                             focusManager.clearFocus()
                         }
                     }
-
-                    ChatGPTLiteTheme() {
+                    val darkTheme = remember(key1 = "darkTheme") {
+                        mutableStateOf(true)
+                    }
+                    ChatGPTLiteTheme(darkTheme.value) {
                         Surface(
                             color = MaterialTheme.colorScheme.background,
                         ) {
@@ -79,18 +81,23 @@ class MainActivity : ComponentActivity() {
                                     scope.launch {
                                         drawerState.close()
                                     }
+                                },
+                                onIconClicked = {
+                                    darkTheme.value = !darkTheme.value
                                 }
                             ) {
-                               Column( modifier = Modifier
-                                   .fillMaxSize()) {
-                                   AppBar (onClickMenu = {
-                                       scope.launch {
-                                           drawerState.open()
-                                       }
-                                   })
-                                   Divider()
-                                   Conversation()
-                               }
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                ) {
+                                    AppBar(onClickMenu = {
+                                        scope.launch {
+                                            drawerState.open()
+                                        }
+                                    })
+                                    Divider()
+                                    Conversation()
+                                }
                             }
                         }
                     }
