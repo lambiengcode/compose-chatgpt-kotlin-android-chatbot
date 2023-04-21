@@ -8,7 +8,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.chatgptlite.wanted.ui.conversations.ConversationViewModel
 import com.chatgptlite.wanted.ui.theme.BackGroundColor
-import com.chatgptlite.wanted.ui.theme.ChatGPTLiteTheme
 import kotlinx.coroutines.launch
 
 //import androidx.compose.material3.ModalDrawerSheet
@@ -16,10 +15,11 @@ import kotlinx.coroutines.launch
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScaffold (
+fun AppScaffold(
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
     onChatClicked: (String) -> Unit,
     onNewChatClicked: () -> Unit,
+    onIconClicked: () -> Unit = {},
     conversationViewModel: ConversationViewModel = hiltViewModel(),
     content: @Composable () -> Unit,
 ) {
@@ -29,19 +29,18 @@ fun AppScaffold (
         conversationViewModel.initialize()
     }
 
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(drawerContainerColor = BackGroundColor) {
+                AppDrawer(
+                    onChatClicked = onChatClicked,
+                    onNewChatClicked = onNewChatClicked,
+                    onIconClicked = onIconClicked,
+                )
+            }
+        },
+        content = content
+    )
 
-    ChatGPTLiteTheme() {
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet (drawerContainerColor = BackGroundColor) {
-                    AppDrawer (
-                        onChatClicked = onChatClicked,
-                        onNewChatClicked = onNewChatClicked,
-                    )
-                }
-            },
-            content = content
-        )
-    }
 }
