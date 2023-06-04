@@ -9,4 +9,3 @@ const val urlToGithub = "https://github.com/lambiengcode"
 
 const val matchResultString = "\"text\":"
 const val matchResultTurboString = "\"content\":"
-var documentPath = ""
