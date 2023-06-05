@@ -179,7 +179,8 @@ class ConversationViewModel @Inject constructor(
         messageRepo.deleteMessage()
     }
 
-    fun deleteConversation(index: Int) = conversationRepo.deleteConversation(index)
+    suspend fun deleteConversation(conversationId: String) =
+        conversationRepo.deleteConversation(conversationId)
 
     private suspend fun fetchMessages() {
         if (_currentConversation.value.isEmpty() ||

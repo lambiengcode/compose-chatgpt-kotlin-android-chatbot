@@ -169,7 +169,7 @@ private fun ColumnScope.HistoryConversations(
                 },
                 onDeleteClicked = {
                     scope.launch {
-                        conversationViewModel.deleteConversation(index)
+                        conversationViewModel.deleteConversation(conversations[index].id)
                         conversationViewModel.deleteMessages(conversations[index].id)
                     }
                 }

@@ -15,13 +15,11 @@ import javax.inject.Inject
 class ConversationRepositoryImpl @Inject constructor(
     private val fsInstance: FirebaseFirestore,
 ) : ConversationRepository {
-    private lateinit var result: QuerySnapshot
-    override suspend fun fetchConversations(): MutableList<ConversationModel> {
-        result = fsInstance.collection(conversationCollection)
-            .orderBy("createdAt", Query.Direction.DESCENDING).get().await()
 
-        if (result.documents.isNotEmpty()) {
-            val documents = result.documents
+    override suspend fun fetchConversations(): MutableList<ConversationModel> {
+
+        if (getFireBaseSnapShot().documents.isNotEmpty()) {
+            val documents = getFireBaseSnapShot().documents
 
             return documents.map {
                 it.toObject(ConversationModel::class.java)
@@ -36,8 +34,18 @@ class ConversationRepositoryImpl @Inject constructor(
         return conversation
     }
 
-    override fun deleteConversation(index: Int) {
-        DataHolder.docPath = result.documents[index].id
+    override suspend fun deleteConversation(conversationId: String) {
+        var desiredKey: String? = null
+
+        getFireBaseSnapShot().documents.map { documentSnapshot ->
+            val id = documentSnapshot.getString("id")
+            if (id == conversationId) {
+                desiredKey = documentSnapshot.id
+            } else {
+                null
+            }
+        }
+        DataHolder.docPath = desiredKey.toString()
 
         val docRef = fsInstance
             .collection("conversations")
@@ -62,7 +70,9 @@ class ConversationRepositoryImpl @Inject constructor(
                     "Error deleting document", e
                 )
             }
-
     }
+    private suspend fun getFireBaseSnapShot() =
+        fsInstance.collection(conversationCollection)
+            .orderBy("createdAt", Query.Direction.DESCENDING).get().await()
 
 }
