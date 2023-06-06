@@ -98,7 +98,7 @@ The project also contains other files and directories at the root level, includi
     - [ ] gpt-3.5-turbo
     - [ ] text-davinci-003, text-curie-001, text-babbage-001, text-ada-001
 - [ ] Stop generating
-- [ ] Delete conversation
+- [x] Delete conversation
 - [ ] Settings for ChatGPT
 - [ ] Light/Dart Themes
 
