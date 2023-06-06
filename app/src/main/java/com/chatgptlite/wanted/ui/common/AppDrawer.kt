@@ -22,10 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Message
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.AddComment
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -159,7 +156,7 @@ private fun ColumnScope.HistoryConversations(
             .weight(1f, false),
     ) {
         items(conversations.size) { index ->
-            ChatItem(
+            RecycleChatItem(
                 text = conversations[index].title,
                 Icons.Filled.Message,
                 selected = conversations[index].id == conversationId,
@@ -170,6 +167,12 @@ private fun ColumnScope.HistoryConversations(
                         conversationViewModel.onConversation(conversations[index])
                     }
                 },
+                onDeleteClicked = {
+                    scope.launch {
+                        conversationViewModel.deleteConversation(conversations[index].id)
+                        conversationViewModel.deleteMessages(conversations[index].id)
+                    }
+                }
             )
         }
     }
@@ -237,6 +240,67 @@ private fun ChatItem(
             modifier = Modifier.padding(start = 12.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+@Composable
+private fun RecycleChatItem(
+    text: String,
+    icon: ImageVector = Icons.Filled.Edit,
+    selected: Boolean,
+    onChatClicked: () -> Unit,
+    onDeleteClicked: () -> Unit
+) {
+    val background = if (selected) {
+        Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+    } else {
+        Modifier
+    }
+    Row(
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 34.dp)
+            .clip(CircleShape)
+            .then(background)
+            .clickable(onClick = onChatClicked),
+        verticalAlignment = CenterVertically
+    ) {
+        val iconTint = if (selected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
+        Icon(
+            icon,
+            tint = iconTint,
+            modifier = Modifier
+                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+                .size(25.dp),
+            contentDescription = null,
+        )
+        Text(
+            text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (selected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
+            modifier = Modifier.padding(start = 12.dp).fillMaxWidth(0.85f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Spacer(Modifier.weight(0.9f, true))
+        Icon(
+            imageVector = Icons.Filled.Delete,
+            contentDescription = "Delete",
+            tint = if (selected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
+            modifier = Modifier.clickable { onDeleteClicked() }
         )
     }
 }

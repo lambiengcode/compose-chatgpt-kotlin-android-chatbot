@@ -134,9 +134,11 @@ class ConversationViewModel @Inject constructor(
         var response: String = ""
 
         for (message in messagesMap[conversationId]!!.reversed()) {
-            response += """
-Human:${message.question.trim()}
-Bot:${if (message.answer == "Let me thinking...") "" else message.answer.trim()}"""
+            response += """Human:${message.question.trim()}
+                |Bot:${
+                if (message.answer == "Let me thinking...") ""
+                else message.answer.trim()
+            }""".trimMargin()
         }
 
         return response
@@ -150,8 +152,7 @@ Bot:${if (message.answer == "Let me thinking...") "" else message.answer.trim()}
 
         val response: MutableList<MessageTurbo> = mutableListOf(
             MessageTurbo(
-                role = TurboRole.system,
-                content = "Markdown style if exists code"
+                role = TurboRole.system, content = "Markdown style if exists code"
             )
         )
 
@@ -166,8 +167,24 @@ Bot:${if (message.answer == "Let me thinking...") "" else message.answer.trim()}
         return response.toList()
     }
 
+    fun deleteMessages(conversationId: String) {
+
+        val conversations: MutableList<ConversationModel> = _conversations.value.toMutableList()
+        val conversationToRemove = conversations.find { it.id == conversationId }
+
+        if (conversationToRemove != null) {
+            conversations.remove(conversationToRemove)
+            _conversations.value = conversations
+        }
+        messageRepo.deleteMessage()
+    }
+
+    suspend fun deleteConversation(conversationId: String) =
+        conversationRepo.deleteConversation(conversationId)
+
     private suspend fun fetchMessages() {
-        if (_currentConversation.value.isEmpty() || _messages.value[_currentConversation.value] != null) return
+        if (_currentConversation.value.isEmpty() ||
+            _messages.value[_currentConversation.value] != null) return
 
         val flow: Flow<List<MessageModel>> = messageRepo.fetchMessages(_currentConversation.value)
 
