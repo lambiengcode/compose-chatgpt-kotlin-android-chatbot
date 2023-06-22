@@ -9,4 +9,4 @@ const val urlToGithub = "https://github.com/lambiengcode"
 
 const val matchResultString = "\"text\":"
 const val matchResultTurboString = "\"content\":"
-const val ConversationTestTag = "ConversationTestTag"
+const val conversationTestTag = "ConversationTestTag"

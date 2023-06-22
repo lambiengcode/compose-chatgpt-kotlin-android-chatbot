@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.chatgptlite.wanted.constants.ConversationTestTag
+import com.chatgptlite.wanted.constants.conversationTestTag
 import com.chatgptlite.wanted.models.MessageModel
 import com.chatgptlite.wanted.ui.conversations.components.MessageCard
 import com.chatgptlite.wanted.ui.conversations.components.TextInput
@@ -68,7 +68,7 @@ fun MessageList(
             contentPadding =
             WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues(),
             modifier = Modifier
-                .testTag(ConversationTestTag)
+                .testTag(conversationTestTag)
                 .fillMaxSize(),
             reverseLayout = true,
             state = listState,
