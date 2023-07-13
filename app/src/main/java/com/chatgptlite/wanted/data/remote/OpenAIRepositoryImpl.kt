@@ -1,7 +1,7 @@
 package com.chatgptlite.wanted.data.remote
 
+import android.util.Log
 import com.chatgptlite.wanted.constants.matchResultString
-import com.chatgptlite.wanted.constants.matchResultTurboString
 import com.chatgptlite.wanted.data.api.OpenAIApi
 import com.chatgptlite.wanted.models.TextCompletionsParam
 import com.chatgptlite.wanted.models.toJson
@@ -24,7 +24,7 @@ class OpenAIRepositoryImpl @Inject constructor(
     override fun textCompletionsWithStream(params: TextCompletionsParam): Flow<String> =
         callbackFlow {
             withContext(Dispatchers.IO) {
-                val response = (if (params.isTurbo) openAIApi.textCompletionsTurboWithStream(
+                val response = (if (params.isChatCompletions) openAIApi.textCompletionsTurboWithStream(
                     params.toJson()
                 ) else openAIApi.textCompletionsWithStream(params.toJson())).execute()
 
@@ -41,7 +41,7 @@ class OpenAIRepositoryImpl @Inject constructor(
                                 try {
                                     // Handle & convert data -> emit to client
                                     val value =
-                                        if (params.isTurbo) lookupDataFromResponseTurbo(line) else lookupDataFromResponse(
+                                        if (params.isChatCompletions) lookupDataFromResponseTurbo(line) else lookupDataFromResponse(
                                             line
                                         )
 
@@ -49,12 +49,13 @@ class OpenAIRepositoryImpl @Inject constructor(
                                         trySend(value)
                                     }
                                 } catch (e: Exception) {
-
                                     e.printStackTrace()
+                                    Log.e("ChatGPT Lite BUG", e.toString())
                                 }
                             }
                         }
                     } catch (e: IOException) {
+                        Log.e("ChatGPT Lite BUG", e.toString())
                         throw Exception(e)
                     } finally {
                         withContext(Dispatchers.IO) {
@@ -69,11 +70,12 @@ class OpenAIRepositoryImpl @Inject constructor(
                         try {
                             jsonObject = JSONObject(response.errorBody()!!.string())
                             println(jsonObject)
+                            trySend("Failure! Try again. $jsonObject")
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
                     }
-                    trySend("Failure! Try again.")
+                    trySend("Failure! Try again")
                     close()
                 }
             }
@@ -111,31 +113,13 @@ class OpenAIRepositoryImpl @Inject constructor(
     }
 
     private fun lookupDataFromResponseTurbo(jsonString: String): String {
-        val splitsJsonString = jsonString.split("[{")
+        val regex = """"content"\s*:\s*"([^"]+)"""".toRegex()
+        val matchResult = regex.find(jsonString)
 
-        val indexOfResult: Int = splitsJsonString.indexOfLast {
-            it.contains(matchResultTurboString)
+        if (matchResult != null && matchResult.groupValues.size > 1) {
+            return matchResult.groupValues[1]
         }
 
-        val textSplits =
-            if (indexOfResult == -1) listOf() else splitsJsonString[indexOfResult].split(",")
-
-        val indexOfText: Int = textSplits.indexOfLast {
-            it.contains(matchResultTurboString)
-        }
-
-        if (indexOfText != -1) {
-            try {
-                val gson = Gson()
-                val jsonObject =
-                    gson.fromJson("{${textSplits[indexOfText]}}", JsonObject::class.java)
-
-                return jsonObject.getAsJsonObject("delta").get("content").asString
-            } catch (e: java.lang.Exception) {
-                println(e.localizedMessage)
-            }
-        }
-
-        return ""
+        return " "
     }
 }

@@ -18,7 +18,7 @@ data class TextCompletionsParam(
     @SerializedName("maxTokens")
     val maxTokens: Int = 2048,
     @SerializedName("model")
-    val model: GPTModel = GPTModel.gpt35Turbo,
+    val model: GPTModel = GPTModel.gpt4,
     @SerializedName("messages")
     val messagesTurbo: List<MessageTurbo> = emptyList(),
 ) {
@@ -52,8 +52,8 @@ data class TextCompletionsParam(
         return result
     }
 
-    val isTurbo: Boolean
-        get() = model == GPTModel.gpt35Turbo
+    val isChatCompletions: Boolean
+        get() = model.isChatCompletion
 }
 
 fun TextCompletionsParam.toJson(): JsonObject {
@@ -62,7 +62,7 @@ fun TextCompletionsParam.toJson(): JsonObject {
     json.addProperty("stream", stream)
     json.addProperty("model", model.model)
 
-    if (model == GPTModel.gpt35Turbo) {
+    if (isChatCompletions) {
         val jsonArray = JsonArray()
         for (message in messagesTurbo) jsonArray.add(message.toJson())
 
