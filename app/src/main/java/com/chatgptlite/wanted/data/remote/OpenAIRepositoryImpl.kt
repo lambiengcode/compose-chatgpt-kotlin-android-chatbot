@@ -1,12 +1,9 @@
 package com.chatgptlite.wanted.data.remote
 
 import android.util.Log
-import com.chatgptlite.wanted.constants.matchResultString
 import com.chatgptlite.wanted.data.api.OpenAIApi
 import com.chatgptlite.wanted.models.TextCompletionsParam
 import com.chatgptlite.wanted.models.toJson
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -84,32 +81,14 @@ class OpenAIRepositoryImpl @Inject constructor(
         }
 
     private fun lookupDataFromResponse(jsonString: String): String {
-        val splitsJsonString = jsonString.split("[{")
+        val regex = """"text"\s*:\s*"([^"]+)"""".toRegex()
+        val matchResult = regex.find(jsonString)
 
-        val indexOfResult: Int = splitsJsonString.indexOfLast {
-            it.contains(matchResultString)
+        if (matchResult != null && matchResult.groupValues.size > 1) {
+            return matchResult.groupValues[1]
         }
 
-        val textSplits =
-            if (indexOfResult == -1) listOf() else splitsJsonString[indexOfResult].split(",")
-
-        val indexOfText: Int = textSplits.indexOfLast {
-            it.contains(matchResultString)
-        }
-
-        if (indexOfText != -1) {
-            try {
-                val gson = Gson()
-                val jsonObject =
-                    gson.fromJson("{${textSplits[indexOfText]}}", JsonObject::class.java)
-
-                return jsonObject.get("text").asString
-            } catch (e: java.lang.Exception) {
-                println(e.localizedMessage)
-            }
-        }
-
-        return ""
+        return " "
     }
 
     private fun lookupDataFromResponseTurbo(jsonString: String): String {
