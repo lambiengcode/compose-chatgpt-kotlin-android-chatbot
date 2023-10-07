@@ -12,15 +12,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chatgptlite.wanted.models.MessageModel
+import com.chatgptlite.wanted.ui.common.AppBar
 import com.chatgptlite.wanted.ui.theme.*
 import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.ui.CodeBlockStyle
 import com.halilibo.richtext.ui.RichText
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material3.SetupMaterial3RichText
+import java.util.Date
 
 @Composable
 fun MessageCard(message: MessageModel, isHuman: Boolean = false, isLast: Boolean = false) {
@@ -87,4 +90,42 @@ fun BotMessageCard(message: MessageModel) {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MessageCardPreviewHuman() {
+
+    MessageCard(
+        message =  MessageModel(
+            id = "",
+            conversationId = "",
+            question = "question text field by Human ",
+            answer = "question text field by Human ",
+            createdAt = Date()
+
+        ),
+        isHuman = true,
+        isLast= false
+
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MessageCardPreviewBot() {
+
+    MessageCard(
+        message =  MessageModel(
+            id = "",
+            conversationId = "",
+            question = "answer text field by Bot ",
+            answer = "answer text field by Bot ",
+            createdAt = Date()
+
+        ),
+        isHuman = false,
+        isLast= false
+
+    )
 }

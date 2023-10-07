@@ -31,7 +31,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -43,6 +42,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,12 +55,50 @@ import com.chatgptlite.wanted.models.ConversationModel
 import com.chatgptlite.wanted.ui.conversations.ConversationViewModel
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun AppDrawer(
     onChatClicked: (String) -> Unit,
     onNewChatClicked: () -> Unit,
     conversationViewModel: ConversationViewModel = hiltViewModel(),
     onIconClicked: () -> Unit = {}
+) {
+    val coroutineScope = rememberCoroutineScope()
+    AppDrawerIn(
+        onChatClicked = onChatClicked,
+        onNewChatClicked = onNewChatClicked,
+        onIconClicked = onIconClicked,
+        conversationViewModel = { conversationViewModel.newConversation() },
+        deleteConversation = { text ->
+            coroutineScope.launch {
+                conversationViewModel.deleteConversation(text)
+            }
+        },
+        deleteMessages = { text ->
+            coroutineScope.launch {
+                conversationViewModel.deleteMessages(text)
+            }
+        },
+        onConversation = { conversationModel: ConversationModel ->
+            coroutineScope.launch { conversationViewModel.onConversation(conversationModel) }
+        },
+        currentConversationState = conversationViewModel.currentConversationState.collectAsState().value,
+        conversationState = conversationViewModel.conversationsState.collectAsState().value
+    )
+}
+
+
+@Composable
+private fun AppDrawerIn(
+    onChatClicked: (String) -> Unit,
+    onNewChatClicked: () -> Unit,
+    onIconClicked: () -> Unit,
+    conversationViewModel: () -> Unit,
+    deleteConversation: (String) -> Unit,
+    deleteMessages: (String) -> Unit,
+    onConversation: (ConversationModel) -> Unit,
+    currentConversationState: String,
+    conversationState: MutableList<ConversationModel>,
 ) {
     val context = LocalContext.current
 
@@ -75,9 +113,16 @@ fun AppDrawer(
         DrawerItemHeader("Chats")
         ChatItem("New Chat", Icons.Outlined.AddComment, false) {
             onNewChatClicked()
-            conversationViewModel.newConversation()
+            conversationViewModel()
         }
-        HistoryConversations(onChatClicked)
+        HistoryConversations(
+            onChatClicked,
+            deleteConversation,
+            onConversation,
+            deleteMessages,
+            currentConversationState,
+            conversationState
+        )
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
         DrawerItemHeader("Settings")
         ChatItem("Settings", Icons.Filled.Settings, false) { onChatClicked("Settings") }
@@ -144,33 +189,35 @@ private fun DrawerHeader(
 @Composable
 private fun ColumnScope.HistoryConversations(
     onChatClicked: (String) -> Unit,
-    conversationViewModel: ConversationViewModel = hiltViewModel(),
+    deleteConversation: (String) -> Unit,
+    onConversation: (ConversationModel) -> Unit,
+    deleteMessages: (String) -> Unit,
+    currentConversationState: String,
+    conversationState: List<ConversationModel>
 ) {
     val scope = rememberCoroutineScope()
-    val conversationId: String by conversationViewModel.currentConversationState.collectAsState()
-    val conversations: List<ConversationModel> by conversationViewModel.conversationsState.collectAsState()
 
     LazyColumn(
         Modifier
             .fillMaxWidth()
             .weight(1f, false),
     ) {
-        items(conversations.size) { index ->
+        items(conversationState.size) { index ->
             RecycleChatItem(
-                text = conversations[index].title,
+                text = conversationState[index].title,
                 Icons.Filled.Message,
-                selected = conversations[index].id == conversationId,
+                selected = conversationState[index].id == currentConversationState,
                 onChatClicked = {
-                    onChatClicked(conversations[index].id)
+                    onChatClicked(conversationState[index].id)
 
                     scope.launch {
-                        conversationViewModel.onConversation(conversations[index])
+                        onConversation(conversationState[index])
                     }
                 },
                 onDeleteClicked = {
                     scope.launch {
-                        conversationViewModel.deleteConversation(conversations[index].id)
-                        conversationViewModel.deleteMessages(conversations[index].id)
+                        deleteConversation(conversationState[index].id)
+                        deleteMessages(conversationState[index].id)
                     }
                 }
             )
@@ -243,6 +290,7 @@ private fun ChatItem(
         )
     }
 }
+
 @Composable
 private fun RecycleChatItem(
     text: String,
@@ -287,7 +335,9 @@ private fun RecycleChatItem(
             } else {
                 MaterialTheme.colorScheme.onSurface
             },
-            modifier = Modifier.padding(start = 12.dp).fillMaxWidth(0.85f),
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .fillMaxWidth(0.85f),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -345,3 +395,23 @@ fun DividerItem(modifier: Modifier = Modifier) {
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
 }
+
+@Preview()
+@Composable
+fun PreviewAppDrawerIn(
+) {
+    AppDrawerIn(
+        onChatClicked = {},
+        onNewChatClicked = {},
+        onIconClicked = {},
+        conversationViewModel = {},
+        deleteConversation = {},
+        deleteMessages = {},
+        conversationState = mutableListOf(),
+        currentConversationState = String(),
+        onConversation = { _: ConversationModel -> }
+
+    )
+
+}
+
