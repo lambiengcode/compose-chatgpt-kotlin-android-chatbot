@@ -21,9 +21,10 @@ class OpenAIRepositoryImpl @Inject constructor(
     override fun textCompletionsWithStream(params: TextCompletionsParam): Flow<String> =
         callbackFlow {
             withContext(Dispatchers.IO) {
-                val response = (if (params.isChatCompletions) openAIApi.textCompletionsTurboWithStream(
-                    params.toJson()
-                ) else openAIApi.textCompletionsWithStream(params.toJson())).execute()
+                val response =
+                    (if (params.isChatCompletions) openAIApi.textCompletionsTurboWithStream(
+                        params.toJson()
+                    ) else openAIApi.textCompletionsWithStream(params.toJson())).execute()
 
                 if (response.isSuccessful) {
                     val input = response.body()?.byteStream()?.bufferedReader() ?: throw Exception()
@@ -38,7 +39,9 @@ class OpenAIRepositoryImpl @Inject constructor(
                                 try {
                                     // Handle & convert data -> emit to client
                                     val value =
-                                        if (params.isChatCompletions) lookupDataFromResponseTurbo(line) else lookupDataFromResponse(
+                                        if (params.isChatCompletions) lookupDataFromResponseTurbo(
+                                            line
+                                        ) else lookupDataFromResponse(
                                             line
                                         )
 
@@ -79,13 +82,18 @@ class OpenAIRepositoryImpl @Inject constructor(
 
             close()
         }
-
+    /** Replace any double newline characters (\n\n) with a space.
+    Replace any single newline characters (\n) with a space.
+     */
     private fun lookupDataFromResponse(jsonString: String): String {
         val regex = """"text"\s*:\s*"([^"]+)"""".toRegex()
         val matchResult = regex.find(jsonString)
 
         if (matchResult != null && matchResult.groupValues.size > 1) {
-            return matchResult.groupValues[1]
+            val extractedText = matchResult.groupValues[1]
+            return extractedText
+                .replace("\\n\\n", " ")
+                .replace("\\n", " ")
         }
 
         return " "
@@ -96,7 +104,10 @@ class OpenAIRepositoryImpl @Inject constructor(
         val matchResult = regex.find(jsonString)
 
         if (matchResult != null && matchResult.groupValues.size > 1) {
-            return matchResult.groupValues[1]
+            val extractedText = matchResult.groupValues[1]
+            return extractedText
+                .replace("\\n\\n", " ")
+                .replace("\\n", " ")
         }
 
         return " "
