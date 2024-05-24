@@ -15,10 +15,10 @@ Overall, Compose ChatGPT Kotlin is a powerful and flexible chatbot solution that
 ## Screenshots
 
 <p>
-<img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_chatgpt_lite.gif?raw=true" width="200px"/>
-<img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_1.jpeg?raw=true" width="200px"/>
-<img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_2.jpeg?raw=true" width="200px"/>
-<img src="https://github.com/lambiengcode/compose_chatgpt_kotlin/blob/main/screenshots/demo_3.jpg?raw=true" width="200px"/>
+<img src="./screenshots/demo_chatgpt_lite.gif" width="200px"/>
+<img src="./screenshots/demo_1.jpeg" width="200px"/>
+<img src="./screenshots/demo_2.jpeg" width="200px"/>
+<img src="./screenshots/demo_3.jpg" width="200px"/>
 </p>
 
 
