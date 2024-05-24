@@ -14,7 +14,6 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 
-@Suppress("UNREACHABLE_CODE")
 class OpenAIRepositoryImpl @Inject constructor(
     private val openAIApi: OpenAIApi,
 ) : OpenAIRepository {

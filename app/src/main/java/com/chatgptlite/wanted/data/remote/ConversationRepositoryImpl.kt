@@ -1,14 +1,9 @@
 package com.chatgptlite.wanted.data.remote
 
-import android.content.ContentValues
-import android.util.Log
 import com.chatgptlite.wanted.constants.conversationCollection
-import com.chatgptlite.wanted.helpers.DataHolder
 import com.chatgptlite.wanted.models.ConversationModel
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -35,42 +30,18 @@ class ConversationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteConversation(conversationId: String) {
-        var desiredKey: String? = null
-
-        getFireBaseSnapShot().documents.map { documentSnapshot ->
-            val id = documentSnapshot.getString("id")
-            if (id == conversationId) {
-                desiredKey = documentSnapshot.id
-            } else {
-                null
-            }
-        }
-        DataHolder.docPath = desiredKey.toString()
-
-        val docRef = fsInstance
+        fsInstance
             .collection("conversations")
-            .document(DataHolder.docPath)
-
-        // Remove the 'capital' field from the document
-        val updates = hashMapOf<String, Any>(
-            "id" to FieldValue.delete(),
-            "title" to FieldValue.delete(),
-            "createdAt" to FieldValue.delete()
-        )
-        docRef.update(updates)
-            .addOnSuccessListener {
-                Log.d(
-                    ContentValues.TAG,
-                    "DocumentSnapshot successfully deleted from message!"
-                )
-            }
-            .addOnFailureListener { e ->
-                Log.w(
-                    ContentValues.TAG,
-                    "Error deleting document", e
-                )
+            .whereEqualTo("id", conversationId)
+            .get()
+            .addOnSuccessListener { res ->
+                res.documents.forEach { doc ->
+                    // Use the collection and document ID to form the correct path
+                    fsInstance.collection("conversations").document(doc.id).delete()
+                }
             }
     }
+
     private suspend fun getFireBaseSnapShot() =
         fsInstance.collection(conversationCollection)
             .orderBy("createdAt", Query.Direction.DESCENDING).get().await()

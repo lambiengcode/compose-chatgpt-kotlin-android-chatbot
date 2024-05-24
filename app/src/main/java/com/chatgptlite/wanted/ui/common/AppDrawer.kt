@@ -24,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.AddComment
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,14 +71,9 @@ fun AppDrawer(
         onNewChatClicked = onNewChatClicked,
         onIconClicked = onIconClicked,
         conversationViewModel = { conversationViewModel.newConversation() },
-        deleteConversation = { text ->
+        deleteConversation = { conversationId ->
             coroutineScope.launch {
-                conversationViewModel.deleteConversation(text)
-            }
-        },
-        deleteMessages = { text ->
-            coroutineScope.launch {
-                conversationViewModel.deleteMessages(text)
+                conversationViewModel.deleteConversation(conversationId)
             }
         },
         onConversation = { conversationModel: ConversationModel ->
@@ -95,7 +92,6 @@ private fun AppDrawerIn(
     onIconClicked: () -> Unit,
     conversationViewModel: () -> Unit,
     deleteConversation: (String) -> Unit,
-    deleteMessages: (String) -> Unit,
     onConversation: (ConversationModel) -> Unit,
     currentConversationState: String,
     conversationState: MutableList<ConversationModel>,
@@ -119,7 +115,6 @@ private fun AppDrawerIn(
             onChatClicked,
             deleteConversation,
             onConversation,
-            deleteMessages,
             currentConversationState,
             conversationState
         )
@@ -191,7 +186,6 @@ private fun ColumnScope.HistoryConversations(
     onChatClicked: (String) -> Unit,
     deleteConversation: (String) -> Unit,
     onConversation: (ConversationModel) -> Unit,
-    deleteMessages: (String) -> Unit,
     currentConversationState: String,
     conversationState: List<ConversationModel>
 ) {
@@ -217,7 +211,6 @@ private fun ColumnScope.HistoryConversations(
                 onDeleteClicked = {
                     scope.launch {
                         deleteConversation(conversationState[index].id)
-                        deleteMessages(conversationState[index].id)
                     }
                 }
             )
@@ -308,7 +301,7 @@ private fun RecycleChatItem(
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth()
-            .padding(horizontal = 34.dp)
+            .padding(horizontal = 30.dp)
             .clip(CircleShape)
             .then(background)
             .clickable(onClick = onChatClicked),
@@ -343,14 +336,16 @@ private fun RecycleChatItem(
         )
         Spacer(Modifier.weight(0.9f, true))
         Icon(
-            imageVector = Icons.Filled.Delete,
+            imageVector = Icons.Outlined.Delete,
             contentDescription = "Delete",
             tint = if (selected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurface
             },
-            modifier = Modifier.clickable { onDeleteClicked() }
+            modifier = Modifier.padding(
+                end = 12.dp
+            ).clickable { onDeleteClicked() }
         )
     }
 }
@@ -406,7 +401,6 @@ fun PreviewAppDrawerIn(
         onIconClicked = {},
         conversationViewModel = {},
         deleteConversation = {},
-        deleteMessages = {},
         conversationState = mutableListOf(),
         currentConversationState = String(),
         onConversation = { _: ConversationModel -> }
