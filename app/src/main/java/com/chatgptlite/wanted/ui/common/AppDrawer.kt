@@ -24,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.AddComment
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -158,7 +160,7 @@ private fun ColumnScope.HistoryConversations(
         items(conversations.size) { index ->
             RecycleChatItem(
                 text = conversations[index].title,
-                Icons.Filled.Message,
+                Icons.Outlined.Message,
                 selected = conversations[index].id == conversationId,
                 onChatClicked = {
                     onChatClicked(conversations[index].id)
@@ -170,7 +172,6 @@ private fun ColumnScope.HistoryConversations(
                 onDeleteClicked = {
                     scope.launch {
                         conversationViewModel.deleteConversation(conversations[index].id)
-                        conversationViewModel.deleteMessages(conversations[index].id)
                     }
                 }
             )
@@ -260,7 +261,7 @@ private fun RecycleChatItem(
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth()
-            .padding(horizontal = 34.dp)
+            .padding(horizontal = 30.dp)
             .clip(CircleShape)
             .then(background)
             .clickable(onClick = onChatClicked),
@@ -293,14 +294,16 @@ private fun RecycleChatItem(
         )
         Spacer(Modifier.weight(0.9f, true))
         Icon(
-            imageVector = Icons.Filled.Delete,
+            imageVector = Icons.Outlined.Delete,
             contentDescription = "Delete",
             tint = if (selected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurface
             },
-            modifier = Modifier.clickable { onDeleteClicked() }
+            modifier = Modifier.padding(
+                end = 12.dp
+            ).clickable { onDeleteClicked() }
         )
     }
 }

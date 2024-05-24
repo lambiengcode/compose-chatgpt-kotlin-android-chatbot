@@ -181,8 +181,11 @@ class ConversationViewModel @Inject constructor(
         return response.toList()
     }
 
-    fun deleteMessages(conversationId: String) {
+    suspend fun deleteConversation(conversationId: String) {
+        // Delete remote
+        conversationRepo.deleteConversation(conversationId)
 
+        // Delete local
         val conversations: MutableList<ConversationModel> = _conversations.value.toMutableList()
         val conversationToRemove = conversations.find { it.id == conversationId }
 
@@ -190,11 +193,7 @@ class ConversationViewModel @Inject constructor(
             conversations.remove(conversationToRemove)
             _conversations.value = conversations
         }
-        messageRepo.deleteMessage()
     }
-
-    suspend fun deleteConversation(conversationId: String) =
-        conversationRepo.deleteConversation(conversationId)
 
     private suspend fun fetchMessages() {
         if (_currentConversation.value.isEmpty() ||
