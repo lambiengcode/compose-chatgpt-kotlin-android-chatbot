@@ -71,14 +71,9 @@ fun AppDrawer(
         onNewChatClicked = onNewChatClicked,
         onIconClicked = onIconClicked,
         conversationViewModel = { conversationViewModel.newConversation() },
-        deleteConversation = { text ->
+        deleteConversation = { conversationId ->
             coroutineScope.launch {
-                conversationViewModel.deleteConversation(text)
-            }
-        },
-        deleteMessages = { text ->
-            coroutineScope.launch {
-                conversationViewModel.deleteMessages(text)
+                conversationViewModel.deleteConversation(conversationId)
             }
         },
         onConversation = { conversationModel: ConversationModel ->
@@ -97,7 +92,6 @@ private fun AppDrawerIn(
     onIconClicked: () -> Unit,
     conversationViewModel: () -> Unit,
     deleteConversation: (String) -> Unit,
-    deleteMessages: (String) -> Unit,
     onConversation: (ConversationModel) -> Unit,
     currentConversationState: String,
     conversationState: MutableList<ConversationModel>,
@@ -121,7 +115,6 @@ private fun AppDrawerIn(
             onChatClicked,
             deleteConversation,
             onConversation,
-            deleteMessages,
             currentConversationState,
             conversationState
         )
@@ -193,7 +186,6 @@ private fun ColumnScope.HistoryConversations(
     onChatClicked: (String) -> Unit,
     deleteConversation: (String) -> Unit,
     onConversation: (ConversationModel) -> Unit,
-    deleteMessages: (String) -> Unit,
     currentConversationState: String,
     conversationState: List<ConversationModel>
 ) {
@@ -206,9 +198,9 @@ private fun ColumnScope.HistoryConversations(
     ) {
         items(conversationState.size) { index ->
             RecycleChatItem(
-                text = conversations[index].title,
-                Icons.Outlined.Message,
-                selected = conversations[index].id == conversationId,
+                text = conversationState[index].title,
+                Icons.Filled.Message,
+                selected = conversationState[index].id == currentConversationState,
                 onChatClicked = {
                     onChatClicked(conversationState[index].id)
 
@@ -218,7 +210,7 @@ private fun ColumnScope.HistoryConversations(
                 },
                 onDeleteClicked = {
                     scope.launch {
-                        conversationViewModel.deleteConversation(conversations[index].id)
+                        deleteConversation(conversationState[index].id)
                     }
                 }
             )
@@ -409,7 +401,6 @@ fun PreviewAppDrawerIn(
         onIconClicked = {},
         conversationViewModel = {},
         deleteConversation = {},
-        deleteMessages = {},
         conversationState = mutableListOf(),
         currentConversationState = String(),
         onConversation = { _: ConversationModel -> }
